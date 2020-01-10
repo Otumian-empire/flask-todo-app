@@ -120,7 +120,7 @@ class Time:
         except Exception as e:
             print(e)
         finally:
-            self.model.conn.commit()
+            self.model.close()
 
     def insert_time(self, task_id, time):
         """ insert time for task using task_id,  passing the time """
@@ -131,7 +131,7 @@ class Time:
         except Exception as e:
             print(e)
         finally:
-            self.model.conn.commit()
+            self.model.close()
 
     def read_time(self, task_id=''):
         """ read time for task using task_id """
@@ -146,7 +146,7 @@ class Time:
         except Exception as e:
             print(e)
         finally:
-            self.model.conn.commit()
+            self.model.close()
 
     def update_time(self, task_id, time):
         """ update time for task using task_id, passing the time"""
@@ -158,7 +158,7 @@ class Time:
         except Exception as e:
             print(e)
         finally:
-            self.model.conn.commit()
+            self.model.close()
 
     def delete_time(self, task_id):
         """ delete time for task using task_id """
@@ -170,4 +170,4 @@ class Time:
         except Exception as e:
             print(e)
         finally:
-            self.model.conn.commit()
+            self.model.close()
