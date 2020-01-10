@@ -1,8 +1,10 @@
 jQuery(function () {
 
+    // maximum and minimum number of characters required
     var maxTextCount = 30
     var minTextCount = 3
 
+    // count the input that user enters
     $('#input').on('keyup', function () {
 
         remove_paragraph(class_name)
@@ -11,6 +13,8 @@ jQuery(function () {
 
         $('#counter').text($('#input').val().length)
 
+        // reduce the input to maxTextCount when user 
+        // enters more text than maxTextCount
         if ($('#input').val().length > maxTextCount) {
 
             $('#input').val($('#input').val().substring(0, maxTextCount))
@@ -24,21 +28,29 @@ jQuery(function () {
 
     })
 
-    $('#add').on('click dblclick', function () {
-        remove_paragraph(class_name)
-        var class_name = 'warning'
+    // add item to the list
+    // $('#add').on('click dblclick', function (e) {
+    //     e.preventDeault()
 
-        if ($('#input').val().length < minTextCount) {
-            call_alert('Minimum text count not reached ' + minTextCount, class_name)
-        } else {
+    //     // remove class if there is any
+    //     remove_paragraph(class_name)
+    //     var class_name = 'warning'
 
-            remove_paragraph(class_name);
-            add_item()
-            call_alert('Item added successfully', 'success')
+    //     // check minimum length
+    //     if ($('#input').val().length < minTextCount) {
+    //         call_alert('Minimum text count not reached ' + minTextCount, class_name)
+    //     } else {
 
-        }
-    })
+    //         remove_paragraph(class_name);
+    //         add_item()
+    //         call_alert('Item added successfully', 'success')
 
+    //     }
+    // })
+
+    /**
+     * remove a paragraph
+     */
     function remove_paragraph(class_name) {
 
         $('p').removeClass(class_name)
@@ -46,6 +58,9 @@ jQuery(function () {
 
     }
 
+    /**
+     * call alert
+     */
     function call_alert(message, class_name) {
 
         var p = $("<p id='alert' class='" + class_name + "'></p>")
@@ -54,10 +69,15 @@ jQuery(function () {
 
     }
 
+    /**
+     * add an item to the list
+     */
     function add_item() {
 
         var span = $('<span></span>')
         span.text($('#input').val())
+
+        // make ajax request to send data to the database
 
         var btn = $('<button></button>')
         btn.text('close')
@@ -80,6 +100,7 @@ jQuery(function () {
         $('.close-btn').on('click', function () {
 
             console.log('removed it')
+            // make request to remove item from the database
             $(this).parent().remove()
 
         })
