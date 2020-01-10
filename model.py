@@ -2,7 +2,7 @@ from datetime import datetime
 import sqlite3
 
 
-class model:
+class Model:
 
     def __init__(self):
         """ connect to the database and create a cursor """
@@ -16,9 +16,6 @@ class model:
                 self.cur.close()
             print(e)
 
-    def run_query(self):
-        raise NotImplementedError
-
     def close(self):
         """ commit changes, close the cursor and connection """
         self.conn.commit()
@@ -26,14 +23,14 @@ class model:
         self.conn.close()
 
 
-class Task(model):
+class Task(Model):
 
     # task : id, name, date
 
     def __init__(self):
         """ create table if table does not exist """
         try:
-            self.model = model()
+            self.model = Model()
             self.model.cur.execute(
                 """CREATE TABLE IF NOT EXISTS `task` (
                     `id`	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -53,19 +50,19 @@ class Task(model):
         """
         try:
             date = datetime.now().strftime('%d-%B-%Y')
-
             sql = "INSERT INTO `task`(`name`, `date`) values(?, ?)"
-            return self.model.cur.execute(sql, name, date).rowcount()
+
+            return self.model.cur.execute(sql, name, date).rowcount
 
         except Exception as e:
             print(e)
         finally:
             self.model.close()
 
-    def read_task(self, id):
+    def read_task(self, id=''):
         """ read task using id """
         try:
-            sql = "SELECT * FROM task"
+            sql = "SELECT * FROM `task`"
 
             if not id:
                 id = ''
@@ -82,9 +79,9 @@ class Task(model):
     def update_task(self, new_name, id):
         """ update task name using id """
         try:
-            sql = "UPDATE FROM `task` SET `name` = ? WHERE id = ?"
+            sql = "UPDATE FROM `task` SET `name` = ? WHERE `id` = ?"
 
-            return self.model.cur.execute(sql, new_name, id).rowcount()
+            return self.model.cur.execute(sql, new_name, id).rowcount
 
         except Exception as e:
             print(e)
@@ -94,9 +91,9 @@ class Task(model):
     def delete_task(self, id):
         """ delete task using id """
         try:
-            sql = "DELET FROM `task` WHERE id = ?"
+            sql = "DELETE FROM `task` WHERE `id` = ?"
 
-            return self.model.cur.execute(sql, id).rowcount()
+            return self.model.cur.execute(sql, id).rowcount
 
         except Exception as e:
             print(e)
@@ -106,33 +103,71 @@ class Task(model):
 
 class Time:
 
-    # time : id, task_id, start, end
+    # time : id, task_id, time
 
     def __init__(self):
         """ create table if table does not exist """
         try:
-            self.TABLE = 'time'
-            model = model()
-            model.cur.execute(
-                """CREATE TABLE IF NOT EXISTS `task` (`id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,`name` TEXT NOT NULL,`date` TEXT NOT NULL)""")
+            self.model = Model()
+            self.model.cur.execute(
+                """CREATE TABLE IF NOT EXISTS `time` (
+                	`id`	INTEGER NOT NULL,
+                    `task_id`	INTEGER NOT NULL,
+                    `time`	TEXT NOT NULL,
+                    PRIMARY KEY(`id`)
+                );""")
 
         except Exception as e:
             print(e)
         finally:
-            model.conn.commit()
+            self.model.conn.commit()
 
-    def insert_time(self, task_id, start, end):
-        """ insert time for task using task_id, passing the start and end """
-        model.conn.commit()
+    def insert_time(self, task_id, time):
+        """ insert time for task using task_id,  passing the time """
+        try:
+            sql = "INSERT INTO `time` (`task_id`, `time`) VALUES(?, ?);"
+            return self.model.cur.execute(sql, task_id, time).rowcount
 
-    def read_time(self, task_id):
+        except Exception as e:
+            print(e)
+        finally:
+            self.model.conn.commit()
+
+    def read_time(self, task_id=''):
         """ read time for task using task_id """
-        pass
+        try:
+            sql = "SELECT * FROM `time"
+            if not task_id:
+                return self.model.cur.execute(sql).fetchall()
+            else:
+                sql += " WHERE `task_id` = ?"
+                return self.model.cur.execute(sql, task_id).fetchone()
 
-    def update_time(self, task_id, start, end):
-        """ update time for task using task_id, passing the start and end """
-        pass
+        except Exception as e:
+            print(e)
+        finally:
+            self.model.conn.commit()
+
+    def update_time(self, task_id, time):
+        """ update time for task using task_id, passing the time"""
+        try:
+            sql = "UPDATE `time` SET `time` = ? WHERE `task_id` = ?"
+
+            return self.model.cur.execute(sql, time, task_id).rowcount
+
+        except Exception as e:
+            print(e)
+        finally:
+            self.model.conn.commit()
 
     def delete_time(self, task_id):
         """ delete time for task using task_id """
-        pass
+        try:
+            sql = "DELETE FROM `time` WHERE `task_id` = ?"
+
+            return self.model.cur.execute(sql, task_id).rowcount
+
+        except Exception as e:
+            print(e)
+        finally:
+            self.model.conn.commit()
