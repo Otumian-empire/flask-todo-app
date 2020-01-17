@@ -18,6 +18,12 @@
     <!-- home page - form -->
     <div class="container">
 
+        <!-- flash message -->
+        {% include 'includes/_flash_messages.html' %}
+        
+        <!-- title -->
+        <h1>{{ title }}</h1>
+
         {% block body %}{% endblock %}
 
     </div>
