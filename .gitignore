@@ -1,5 +1,9 @@
+.gitignore
 __pycache__/
 db.sqlite3
 db.sqlite3-journal
 static/jqeury.js
 .vscode/
+to_do_app
+modetest.py
+test/
