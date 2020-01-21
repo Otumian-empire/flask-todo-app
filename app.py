@@ -1,4 +1,4 @@
-from flask import Flask, flash, jsonify, render_template, request, url_for
+from flask import Flask, flash, jsonify, render_template, request, url_for, redirect
 
 from model import Task, Time
 
@@ -31,39 +31,54 @@ def add_task():
         return url_for("home_page")
 
     if request.form.get('item'):
-        # item = request.form.get('item')
-
-        # if Task().insert_task(item):
-        #     flash("item added", 'success')
-        #     # return url_for('home_page')
-        #     return "success"
-
         payload = request.form.get('item')
         status = 1
-
-    # else:
-    #     payload = "click the button"
+    else:
+        payload = "Empyty field"
 
     return jsonify({'status': status, 'payload': payload})
 
 
-# # read item
-# @app.route('/read')
-# @app.route('/read/<task_id>')
-# def read_task(task_id=''):
-#     return f"read {task_id}"
+# read items
+@app.route('/read', methods=['POST'])
+def read_task():
+    status = 1
+    payload = [
+        {
+            'id': 1,
+            'item': "Call Dr. Amevor"
+        },
+        {
+            'id': 2,
+            'item': "Read Akiola Math"
+        },
+        {
+            'id': 3,
+            'item': "ask Adeleke to review you android code"
+        },
+        {
+            'id': 4,
+            'item': "Submit your project for review"
+        },
+        {
+            'id': 5,
+            'item': "Clearn your room, shame on you"
+        }
+    ]
+
+    return jsonify({'status': status, 'payload': payload})
 
 
-# # update item
-# @app.route('/update/<task_id>', methods=['GET', 'POST'])
-# def update_task(task_id):
-#     return f"update {task_id}"
+# update item
+@app.route('/update/<task_id>', methods=['GET', 'POST'])
+def update_task(task_id):
+    return f"update {task_id}"
 
 
-# # delete item
-# @app.route('/delete/<task_id>', methods=['GET', 'POST'])
-# def delete_task(task_id):
-#     return f"delete {task_id}"
+# delete item
+@app.route('/delete/<task_id>', methods=['GET', 'POST'])
+def delete_task(task_id):
+    return f"delete {task_id}"
 
 
 if __name__ == "__main__":

@@ -4,7 +4,7 @@ jQuery(function () {
     // maximum and minimum number of characters required
     const MAX_TEXT_COUNT = 30
     const MIN_TEXT_COUNT = 3
-    var class_name = 'danger'
+    let class_name = 'danger'
 
 
     // all ajax calls
@@ -21,9 +21,8 @@ jQuery(function () {
                 item: $('#input').val()
             },
             success: function (response) {
-                // location.reload(true)
-                console.log($('#input').val())
                 $('#input').val('')
+                location.reload(true)
             }
             //,
             // error: function (error) {
@@ -34,6 +33,29 @@ jQuery(function () {
     })
 
     // read
+    $.ajax({
+        url: '/read',
+        type: 'POST',
+        dataType: 'json',
+        success: function (response) {
+            status = response['status']
+            payload = response['payload']
+
+            if (status) {
+                for (i = 0; i < payload.length; i++) {
+                    add_item(payload[i].id, payload[i].item)
+                }
+                $('#table').prepend()
+            } else {
+                console.log(playl)
+            }
+
+        }
+        //,
+        // error: function (error) {
+        //     $('#msg').text(error.response_object['result']);
+        // }
+    })
 
     // update
 
@@ -77,13 +99,11 @@ jQuery(function () {
         if ($('#input').val().length < MIN_TEXT_COUNT) {
             call_alert('Minimum text count not reached ' + MIN_TEXT_COUNT, class_name)
         } else {
-
             remove_paragraph(class_name);
             // suppress add_item() name and do a console log
             // console.log()
             // add_item()
             call_alert('Item added successfully', 'success')
-
         }
     })
 
@@ -110,34 +130,37 @@ jQuery(function () {
     /**
      * add an item to the list
      */
-    function add_item() {
-        var span = $('<span></span>')
-        span.text($('#input').val())
+    function add_item(id, task) {
+        var td_id = $("<td></td>")
+        td_id.text(id)
+
+        var td_task = $("<td></td>")
+        td_task.text(task)
+
+        var td_btn = $("<td></td>")
+        td_btn.attr('id', id)
 
         var btn = $('<button></button>')
         btn.text('close')
         btn.addClass('close-btn')
 
-        var clr = $('<div></div>')
-        clr.addClass('clr')
+        td_btn.append(btn)
 
-        var li = $('<li></li>')
-        li.append(span)
-        li.append(btn)
-        li.append(clr)
+        var tr = $("<tr></tr>")
+        tr.append(td_id)
+        tr.append(td_task)
+        tr.append(td_btn)
 
-        $('#list').prepend(li)
+        $('#table').prepend(tr)
 
         $('#input').val('')
         $('#counter').text($('#input').val().length)
 
         $('.close-btn').on('click', function () {
-
             console.log('removed it')
             // make request to remove item from the database
-            $(this).parent().remove()
-
+            $(this).parent().parent().remove()
+            console.log(id, "closed")
         })
     }
-
 })
