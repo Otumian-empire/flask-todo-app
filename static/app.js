@@ -14,7 +14,7 @@ jQuery(function () {
         e.preventDefault()
 
         $.ajax({
-            url: '/add',
+            url: `/add`,
             type: 'POST',
             dataType: 'json',
             data: {
@@ -34,8 +34,8 @@ jQuery(function () {
 
     // read
     $.ajax({
-        url: '/read',
-        type: 'POST',
+        url: `/read`,
+        type: `POST`,
         dataType: 'json',
         success: function (response) {
             status = response['status']
@@ -157,10 +157,28 @@ jQuery(function () {
         $('#counter').text($('#input').val().length)
 
         $('.close-btn').on('click', function () {
-            console.log('removed it')
+
             // make request to remove item from the database
-            $(this).parent().parent().remove()
-            console.log(id, "closed")
+            $.ajax({
+                url: `/delete/${id}`,
+                type: 'DELETE',
+                dataType: 'json',
+                success: function (response) {
+
+                    if (response.response_object['status'] === 1) {
+                        $(this).parent().parent().remove()
+                        location.reload(true)
+                    }
+
+                    $('#firstName').val('')
+                    $('#lastName').val('')
+
+                },
+                error: function (error) {
+                    $('#msg').text(error.response_object['result']);
+                }
+            })
+
         })
     }
 })
