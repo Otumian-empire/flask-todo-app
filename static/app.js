@@ -24,12 +24,7 @@ jQuery(function () {
                 $('#input').val('')
                 location.reload(true)
             }
-            //,
-            // error: function (error) {
-            //     $('#msg').text(error.response_object['result']);
-            // }
         })
-
     })
 
     // read
@@ -51,10 +46,6 @@ jQuery(function () {
             }
 
         }
-        //,
-        // error: function (error) {
-        //     $('#msg').text(error.response_object['result']);
-        // }
     })
 
     // update
@@ -138,9 +129,9 @@ jQuery(function () {
         td_task.text(task)
 
         var td_btn = $("<td></td>")
-        td_btn.attr('id', id)
 
         var btn = $('<button></button>')
+        btn.attr('id', id)
         btn.text('close')
         btn.addClass('close-btn')
 
@@ -157,7 +148,6 @@ jQuery(function () {
         $('#counter').text($('#input').val().length)
 
         $('.close-btn').on('click', function () {
-
             // make request to remove item from the database
             $.ajax({
                 url: `/delete/${id}`,
@@ -166,19 +156,17 @@ jQuery(function () {
                 success: function (response) {
 
                     if (response.response_object['status'] === 1) {
-                        $(this).parent().parent().remove()
+                        $(`#${id}`).parent().parent().remove()
                         location.reload(true)
                     }
 
                     $('#firstName').val('')
                     $('#lastName').val('')
 
-                },
-                error: function (error) {
-                    $('#msg').text(error.response_object['result']);
                 }
             })
-
         })
+
     }
+
 })

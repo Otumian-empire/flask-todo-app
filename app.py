@@ -1,10 +1,13 @@
 from flask import Flask, flash, jsonify, render_template, request, url_for, redirect
 
-from model import Task, Time
 
+# application settions
 app = Flask(__name__)
 app.debug = True
 app.secret_key = 'DH23%$ERTH:<LKH%$^7oiPJHv@#swreBF^IOUjmok;POP'
+
+# database name
+DATABASE = 'to_do_app'
 
 
 # home page
@@ -62,7 +65,7 @@ def read_task():
         },
         {
             'id': 5,
-            'item': "Clearn your room, shame on you"
+            'item': "Clean your room, shame on you"
         }
     ]
 
@@ -76,7 +79,7 @@ def update_task(task_id):
 
 
 # delete item
-@app.route('/delete/<task_id>', methods=['GET', 'POST'])
+@app.route('/delete/<task_id>', methods=['DELETE'])
 def delete_task(task_id):
     return f"delete {task_id}"
 

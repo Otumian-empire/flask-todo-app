@@ -85,13 +85,6 @@ hr {
     border-left: 6px solid #f4e736;
 }
 
-.danger {
-    width: auto;
-    padding: 0 15px;
-    background-color: #fdd;
-    border-left: 6px solid #f44336;
-}
-
 .success {
     width: auto;
     padding: 0 15px;
