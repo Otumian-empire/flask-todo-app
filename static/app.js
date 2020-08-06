@@ -1,4 +1,4 @@
-jQuery(function () {
+jQuery(function() {
 
     // all constants
     // maximum and minimum number of characters required
@@ -10,7 +10,7 @@ jQuery(function () {
     // all ajax calls
     // insert
     // make ajax request to send data to the database
-    $('#addBtn').on('click', function (e) {
+    $('form #add-form').on('submit', function(e) {
         e.preventDefault()
 
         $.ajax({
@@ -20,9 +20,13 @@ jQuery(function () {
             data: {
                 item: $('#input').val()
             },
-            success: function (response) {
+            success: function(response) {
                 $('#input').val('')
                 location.reload(true)
+                call_alert(response['payload'], 'success')
+            },
+            error: function(err) {
+                throw err
             }
         })
     })
@@ -30,21 +34,23 @@ jQuery(function () {
     // read
     $.ajax({
         url: `/read`,
-        type: `POST`,
+        type: `GET`,
         dataType: 'json',
-        success: function (response) {
+        success: function(response) {
             status = response['status']
             payload = response['payload']
 
             if (status) {
-                for (i = 0; i < payload.length; i++) {
-                    add_item(payload[i].id, payload[i].item)
-                }
+                payload.forEach(function(item) {
+                    add_item(item.id, item.task)
+                })
+
                 $('#table').prepend()
-            } else {
-                console.log(playl)
             }
 
+        },
+        error: function(err) {
+            throw err
         }
     })
 
@@ -54,7 +60,7 @@ jQuery(function () {
 
     // all event triggered functionalities
     // count the input that user enters
-    $('#input').on('keyup', function () {
+    $('#input').on('keyup', function() {
 
         remove_paragraph(class_name)
 
@@ -77,27 +83,6 @@ jQuery(function () {
 
     })
 
-    // add item to the list
-    $('#add').on('click', function (e) {
-        e.preventDeault()
-
-        // remove class if there is any
-        remove_paragraph(class_name)
-
-        class_name = 'warning'
-
-        // check minimum length
-        if ($('#input').val().length < MIN_TEXT_COUNT) {
-            call_alert('Minimum text count not reached ' + MIN_TEXT_COUNT, class_name)
-        } else {
-            remove_paragraph(class_name);
-            // suppress add_item() name and do a console log
-            // console.log()
-            // add_item()
-            call_alert('Item added successfully', 'success')
-        }
-    })
-
 
     // all named functions
     /**
@@ -108,8 +93,11 @@ jQuery(function () {
         $('p').remove()
     }
 
+
     /**
      * call alert
+     * @param: message
+     * @param: class_name[success, danger, warning]
      */
     function call_alert(message, class_name) {
         var p = $("<p id='alert' class='" + class_name + "'></p>")
@@ -118,8 +106,11 @@ jQuery(function () {
 
     }
 
+
     /**
      * add an item to the list
+     * @param: id
+     * @param: task
      */
     function add_item(id, task) {
         var td_id = $("<td></td>")
@@ -147,13 +138,13 @@ jQuery(function () {
         $('#input').val('')
         $('#counter').text($('#input').val().length)
 
-        $('.close-btn').on('click', function () {
+        $('.close-btn').on('click', function() {
             // make request to remove item from the database
             $.ajax({
                 url: `/delete/${id}`,
                 type: 'DELETE',
                 dataType: 'json',
-                success: function (response) {
+                success: function(response) {
 
                     if (response.response_object['status'] === 1) {
                         $(`#${id}`).parent().parent().remove()
